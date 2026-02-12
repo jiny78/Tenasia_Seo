@@ -32,21 +32,21 @@ def render_style() -> None:
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Sora:wght@500;700;800&display=swap');
 
 :root {
-  --ink: #0f172a;
-  --muted: #64748b;
-  --line: #dbe4f0;
-  --card: rgba(255, 255, 255, 0.9);
-  --accent: #ef4444;
-  --accent-2: #f97316;
-  --deep: #0b1220;
+  --ink: #e5e7eb;
+  --muted: #94a3b8;
+  --line: #1f2937;
+  --card: rgba(15, 23, 42, 0.74);
+  --accent: #f43f5e;
+  --accent-2: #fb7185;
+  --deep: #f8fafc;
 }
 
 .stApp {
   font-family: "IBM Plex Sans KR", sans-serif;
   background:
-    radial-gradient(circle at 12% 14%, rgba(249, 115, 22, 0.18), transparent 24%),
-    radial-gradient(circle at 86% 84%, rgba(56, 189, 248, 0.18), transparent 22%),
-    linear-gradient(135deg, #fff7f1 0%, #f8fbff 52%, #f5f7fb 100%);
+    radial-gradient(circle at 12% 14%, rgba(244, 63, 94, 0.2), transparent 26%),
+    radial-gradient(circle at 88% 86%, rgba(56, 189, 248, 0.16), transparent 24%),
+    linear-gradient(140deg, #000000 0%, #05070d 45%, #0b1120 100%);
 }
 
 h1, h2, h3 {
@@ -56,8 +56,8 @@ h1, h2, h3 {
 }
 
 [data-testid="stSidebar"] {
-  background: linear-gradient(180deg, #ffffff 0%, #fff5ef 100%);
-  border-right: 1px solid #f4ddd1;
+  background: linear-gradient(180deg, #030712 0%, #0b1220 100%);
+  border-right: 1px solid #1f2937;
 }
 
 [data-testid="stMetric"] {
@@ -65,16 +65,20 @@ h1, h2, h3 {
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 12px 14px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34);
 }
 
 [data-testid="stMetricLabel"] {
   color: var(--muted);
 }
 
+[data-testid="stMetricValue"] {
+  color: #f8fafc;
+}
+
 .hero {
   background:
-    linear-gradient(120deg, rgba(11, 18, 32, 0.96) 0%, rgba(30, 41, 59, 0.96) 54%, rgba(239, 68, 68, 0.93) 100%);
+    linear-gradient(120deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 0.98) 60%, rgba(244, 63, 94, 0.9) 100%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 22px;
   padding: 26px 26px 24px;
@@ -138,7 +142,7 @@ def render_header() -> None:
         """
 <section class="hero">
   <p class="kicker">&#53584;&#50500;&#49884;&#50500; SEO STUDIO</p>
-  <h1>&#44592;&#49324; &#51089;&#49457; &#54980; 10&#52488; &#50504;&#50640; SEO &#51216;&#44160;&#51012; &#45224;&#44581;&#45768;&#45796;</h1>
+  <h1>&#44592;&#49324; &#51089;&#49457; &#54980; 10&#52488; &#50504;&#50640; SEO&#51216;&#44160;</h1>
   <p class="desc">&#51216;&#49688; &#48372;&#44592; -> &#48148;&#47196; &#49688;&#51221; -> &#51116;&#48516;&#49437; &#55120;&#47492;&#51012; &#50684;&#45716; &#53584;&#50500;&#49884;&#50500; &#51204;&#50857; SEO &#54868;&#47732;&#51077;&#45768;&#45796;.</p>
 </section>
         """,
