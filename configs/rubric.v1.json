@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "total": 100,
+  "criteria": [
+    {
+      "id": "title",
+      "weight": 20,
+      "rules": {
+        "min_length": 35,
+        "ideal_min_length": 50,
+        "ideal_max_length": 60,
+        "max_length": 70
+      }
+    },
+    {
+      "id": "meta_description",
+      "weight": 15,
+      "rules": {
+        "min_length": 70,
+        "ideal_min_length": 120,
+        "ideal_max_length": 160,
+        "max_length": 180
+      }
+    },
+    {
+      "id": "headings",
+      "weight": 15,
+      "rules": {
+        "h1_required": true,
+        "target_h2_count": 2
+      }
+    },
+    {
+      "id": "content",
+      "weight": 20,
+      "rules": {
+        "min_word_count": 300,
+        "ideal_word_count": 700
+      }
+    },
+    {
+      "id": "links",
+      "weight": 10,
+      "rules": {
+        "min_internal_links": 2,
+        "min_external_links": 1
+      }
+    },
+    {
+      "id": "images_alt",
+      "weight": 10,
+      "rules": {
+        "allow_missing_alt": 0
+      }
+    },
+    {
+      "id": "readability",
+      "weight": 10,
+      "rules": {
+        "min_avg_sentence_words": 8,
+        "ideal_min_avg_sentence_words": 12,
+        "ideal_max_avg_sentence_words": 25,
+        "max_avg_sentence_words": 30
+      }
+    }
+  ]
+}
