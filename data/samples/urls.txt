@@ -1,0 +1,5 @@
+﻿# 한 줄에 URL 1개씩 입력하세요.
+# 아래는 예시입니다. 실제 Tenasia 기사 URL로 교체하세요.
+https://example.com/article-1
+https://example.com/article-2
+https://example.com/article-3
