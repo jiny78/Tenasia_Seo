@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, timezone
 from typing import Any, Dict
 
@@ -162,7 +161,10 @@ def render_recommendations(result: Dict[str, Any]) -> None:
         )
         return
     for idx, rec in enumerate(recs, 1):
-        st.markdown(f"{idx}. {rec}")
+        lines = rec.split("\n", 1)
+        st.markdown(f"{idx}. **{lines[0]}**")
+        if len(lines) > 1:
+            st.caption(lines[1])
 
 
 def analyze(url: str) -> Dict[str, Any]:
@@ -176,7 +178,7 @@ def main() -> None:
 <section class="hero-wrap">
   <p class="kicker">&#53584;&#50500;&#49884;&#50500; SEO LIVE</p>
   <h1>&#44592;&#49324; URL &#54616;&#45208;&#47196; SEO &#49345;&#53468;&#47484; &#48736;&#47476;&#44172; &#51652;&#45800;&#54633;&#45768;&#45796;</h1>
-  <p class="desc">&#53356;&#47244;&#47553;, &#51216;&#49688; &#44228;&#49328;, &#44060;&#49440; &#44428;&#51109;&#49324;&#54637;&#51012; &#54620; &#48264;&#50640; &#54869;&#51064;&#54616;&#44256; &#44208;&#44284; JSON&#44620;&#51648; &#45796;&#50868;&#47196;&#46300;&#54624; &#49688; &#51080;&#49845;&#45768;&#45796;.</p>
+  <p class="desc">&#53356;&#47244;&#47553;, &#51216;&#49688; &#44228;&#49328;, &#44060;&#49440; &#44428;&#51109;&#49324;&#54637;&#51012; &#54620; &#48264;&#50640; &#54869;&#51064;&#54616;&#44256; &#48148;&#47196; &#49688;&#51221;&#51012; &#51652;&#54665;&#54624; &#49688; &#51080;&#49845;&#45768;&#45796;.</p>
 </section>
         """,
         unsafe_allow_html=True,
@@ -207,16 +209,6 @@ def main() -> None:
             render_recommendations(result)
         render_article_overview(result)
 
-        st.subheader("\uc6d0\ubcf8 JSON")
-        raw_json = json.dumps(result, ensure_ascii=False, indent=2)
-        st.code(raw_json, language="json")
-        st.download_button(
-            "\uacb0\uacfc JSON \ub2e4\uc6b4\ub85c\ub4dc",
-            data=raw_json,
-            file_name="seo_result.json",
-            mime="application/json",
-            use_container_width=True,
-        )
     else:
         st.info(
             "\uc0ac\uc774\ub4dc\ubc14\uc5d0 URL\uc744 \uc785\ub825\ud558\uace0 `\uc9c0\uae08 \ubd84\uc11d` \ubc84\ud2bc\uc744 \ub20c\ub7ec\uc8fc\uc138\uc694."

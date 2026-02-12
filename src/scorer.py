@@ -132,7 +132,10 @@ def _score_links(article: Dict[str, Any], weight: int, rules: Dict[str, Any]) ->
     if internal_links < int(rules.get("min_internal_links", 2)):
         score -= weight * 0.5
         issues.append("internal_links_insufficient")
-    if external_links < int(rules.get("min_external_links", 1)):
+    # 뉴스 서비스 특성상 외부 출처 링크는 필수가 아니므로 감점하지 않는다.
+    if rules.get("require_external_links", False) and external_links < int(
+        rules.get("min_external_links", 1)
+    ):
         score -= weight * 0.5
         issues.append("external_links_missing")
 
