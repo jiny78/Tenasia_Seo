@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tenasia SEO Studio</title>
+  <title>&#53584;&#50500;&#49884;&#50500; SEO Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
@@ -13,43 +13,43 @@
   <div class="backdrop"></div>
   <main class="layout">
     <header class="hero">
-      <p class="eyebrow">TENASIA SEO SYSTEM</p>
-      <h1>기사 URL을 넣으면<br />SEO 개선 포인트를 바로 제시합니다.</h1>
+      <p class="eyebrow">&#53584;&#50500;&#49884;&#50500; SEO SYSTEM</p>
+      <h1>&#44592;&#49324; URL &#54620; &#51460;&#51060;&#47732;<br />SEO &#44060;&#49440; &#54252;&#51064;&#53944;&#47484; &#51609;&#49884; &#54869;&#51064;&#54633;&#45768;&#45796;</h1>
       <p class="sub">
-        크롤링한 기사 기준으로 점수, 항목별 감점 이유, 우선 수정 추천을 보여주는 실험용 대시보드입니다.
+        &#44592;&#49324; URL&#51012; &#48516;&#49437;&#54644; &#51333;&#54633; &#51216;&#49688;, &#54637;&#47785;&#48324; &#49345;&#53468;, &#44060;&#49440; &#44428;&#51109;&#49324;&#54637;&#51012; &#54620; &#54868;&#47732;&#50640;&#49436; &#48372;&#50668;&#51452;&#45716; SEO &#45824;&#49884;&#48372;&#46300;&#51077;&#45768;&#45796;.
       </p>
     </header>
 
     <section class="panel input-panel">
-      <label for="urlInput">분석할 기사 URL</label>
+      <label for="urlInput">&#48516;&#49437;&#54624; &#44592;&#49324; URL</label>
       <div class="input-row">
-        <input id="urlInput" type="url" placeholder="https://..." />
-        <button id="analyzeBtn" type="button">분석하기</button>
+        <input id="urlInput" type="url" placeholder="https://..." value="https://example.com/article" />
+        <button id="analyzeBtn" type="button">&#48516;&#49437;&#54616;&#44592;</button>
       </div>
-      <p id="statusText" class="status">대기 중</p>
+      <p id="statusText" class="status">&#45824;&#44592; &#51473;</p>
     </section>
 
     <section class="grid">
       <article class="panel score-panel">
-        <h2>총점</h2>
+        <h2>&#51333;&#54633; &#51216;&#49688;</h2>
         <div class="score-wrap">
           <div class="score-ring">
             <span id="scoreValue">-</span>
           </div>
           <div>
-            <p id="gradeValue" class="grade">등급: -</p>
-            <p id="summaryText" class="summary">URL을 입력하고 분석을 시작하세요.</p>
+            <p id="gradeValue" class="grade">&#46321;&#44553;: -</p>
+            <p id="summaryText" class="summary">URL&#51012; &#51077;&#47141;&#54616;&#44256; &#48516;&#49437;&#51012; &#49884;&#51089;&#54644; &#51452;&#49464;&#50836;.</p>
           </div>
         </div>
       </article>
 
       <article class="panel detail-panel">
-        <h2>항목별 점수</h2>
+        <h2>&#54637;&#47785;&#48324; &#51216;&#49688;</h2>
         <ul id="detailList" class="detail-list"></ul>
       </article>
 
       <article class="panel recommend-panel">
-        <h2>수정 추천</h2>
+        <h2>&#44060;&#49440; &#44428;&#51109;&#49324;&#54637;</h2>
         <ol id="recommendList" class="recommend-list"></ol>
       </article>
     </section>

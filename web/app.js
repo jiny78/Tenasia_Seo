@@ -8,13 +8,13 @@ const detailList = document.getElementById("detailList");
 const recommendList = document.getElementById("recommendList");
 
 const LABELS = {
-  title: "Title",
-  meta_description: "Meta Description",
-  headings: "Headings",
-  content: "Content",
-  links: "Links",
-  images_alt: "Image Alt",
-  readability: "Readability",
+  title: "\uC81C\uBAA9 \uCD5C\uC801\uD654",
+  meta_description: "\uBA54\uD0C0 \uC124\uBA85",
+  headings: "\uD5E4\uB529 \uAD6C\uC870",
+  content: "\uBCF8\uBB38 \uD488\uC9C8",
+  links: "\uB9C1\uD06C \uAD6C\uC131",
+  images_alt: "\uC774\uBBF8\uC9C0 ALT",
+  readability: "\uAC00\uB3C5\uC131",
 };
 
 function setStatus(message) {
@@ -34,10 +34,11 @@ function renderScore(result) {
   const score = Math.round(result.score.total_score ?? 0);
   const grade = result.score.grade ?? "-";
   scoreValue.textContent = String(score);
-  gradeValue.textContent = `등급: ${grade}`;
-  summaryText.textContent = score >= 80
-    ? "기본 SEO 품질이 양호합니다. 추천 항목 중심으로 미세 조정하세요."
-    : "핵심 SEO 항목의 점수 손실이 큽니다. 추천 우선순위부터 수정하세요.";
+  gradeValue.textContent = `\uB4F1\uAE09: ${grade}`;
+  summaryText.textContent =
+    score >= 80
+      ? "\uD150\uC544\uC2DC\uC544 \uAE30\uC0AC\uC758 SEO \uAE30\uBCF8 \uAD6C\uC131\uC774 \uC591\uD638\uD569\uB2C8\uB2E4. \uCD94\uCC9C \uD56D\uBAA9 \uC911 \uC0C1\uC138 \uC774\uC288\uB97C \uBBF8\uC138 \uC870\uC815\uD574 \uBCF4\uC138\uC694."
+      : "\uD150\uC544\uC2DC\uC544 \uAE30\uC0AC\uC758 SEO \uD575\uC2EC \uD56D\uBAA9\uC5D0 \uAC1C\uC120 \uC5EC\uC9C0\uAC00 \uD07D\uB2C8\uB2E4. \uAD8C\uC7A5 \uC21C\uC11C\uB300\uB85C \uC218\uC815\uD574 \uBCF4\uC138\uC694.";
 }
 
 function renderDetails(result) {
@@ -45,7 +46,7 @@ function renderDetails(result) {
   const details = result.score.details ?? [];
   if (!details.length) {
     const li = document.createElement("li");
-    li.textContent = "세부 점수 데이터가 없습니다.";
+    li.textContent = "\uC138\uBD80 \uC810\uC218 \uB370\uC774\uD130\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.";
     detailList.appendChild(li);
     return;
   }
@@ -58,7 +59,7 @@ function renderDetails(result) {
     left.textContent = LABELS[item.id] ?? item.id;
 
     const right = document.createElement("span");
-    right.className = "chip " + (item.score >= item.weight * 0.75 ? "ok" : "warn");
+    right.className = `chip ${item.score >= item.weight * 0.75 ? "ok" : "warn"}`;
     right.textContent = `${Math.round(item.score)}/${item.weight}`;
 
     li.append(left, right);
@@ -71,7 +72,7 @@ function renderRecommendations(result) {
   const recommendations = result.recommendations ?? [];
   if (!recommendations.length) {
     const li = document.createElement("li");
-    li.textContent = "추천 항목이 없습니다.";
+    li.textContent = "\uCD94\uCC9C \uD56D\uBAA9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.";
     recommendList.appendChild(li);
     return;
   }
@@ -99,9 +100,9 @@ function createDemoResult(url) {
       ],
     },
     recommendations: [
-      "제목 길이를 50~60자로 조정하고 핵심 키워드를 앞부분에 배치하세요.",
-      "메타 설명을 120~160자로 보강해 클릭 유도 문구를 추가하세요.",
-      "본문 내 내부 링크 2개 이상, 외부 신뢰 출처 1개 이상을 포함하세요.",
+      "\uC81C\uBAA9 \uAE38\uC774\uB97C 50~60\uC790\uB85C \uC870\uC815\uD558\uACE0 \uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB97C \uC55E\uBD80\uBD84\uC5D0 \uBC30\uCE58\uD558\uC138\uC694.",
+      "\uBA54\uD0C0 \uC124\uBA85\uC744 120~160\uC790\uB85C \uBCF4\uAC15\uD558\uACE0 \uD074\uB9AD \uC720\uB3C4 \uBB38\uAD6C\uB97C \uCD94\uAC00\uD558\uC138\uC694.",
+      "\uBCF8\uBB38\uC5D0 \uB0B4\uBD80 \uB9C1\uD06C 2\uAC1C \uC774\uC0C1, \uC2E0\uB8B0 \uC678\uBD80 \uCD9C\uCC98 1\uAC1C \uC774\uC0C1\uC744 \uD3EC\uD568\uD558\uC138\uC694.",
     ],
   };
 }
@@ -121,25 +122,25 @@ async function requestAnalyze(url) {
 async function onAnalyze() {
   const url = urlInput.value.trim();
   if (!validateUrl(url)) {
-    setStatus("올바른 URL 형식이 아닙니다.");
+    setStatus("\uC62C\uBC14\uB978 URL \uD615\uC2DD\uC774 \uC544\uB2D9\uB2C8\uB2E4.");
     return;
   }
 
   analyzeBtn.disabled = true;
-  setStatus("분석 중...");
+  setStatus("\uBD84\uC11D \uC911...");
 
   try {
     const result = await requestAnalyze(url);
     renderScore(result);
     renderDetails(result);
     renderRecommendations(result);
-    setStatus("완료: 백엔드 API 결과를 반영했습니다.");
+    setStatus("\uC644\uB8CC: \uBC31\uC5D4\uB4DC API \uACB0\uACFC\uB97C \uBC18\uC601\uD588\uC2B5\uB2C8\uB2E4.");
   } catch (_) {
     const fallback = createDemoResult(url);
     renderScore(fallback);
     renderDetails(fallback);
     renderRecommendations(fallback);
-    setStatus("API 미연결 상태입니다. 데모 결과를 표시했습니다.");
+    setStatus("API \uBBF8\uC5F0\uACB0 \uC0C1\uD0DC\uC785\uB2C8\uB2E4. \uB370\uBAA8 \uACB0\uACFC\uB97C \uD45C\uC2DC\uD588\uC2B5\uB2C8\uB2E4.");
   } finally {
     analyzeBtn.disabled = false;
   }

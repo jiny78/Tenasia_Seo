@@ -1,4 +1,4 @@
-﻿# Tenasia SEO
+# 텐아시아 SEO
 
 기사 URL을 입력받아 콘텐츠를 수집하고, SEO 점수를 산출한 뒤 개선 권장사항을 출력하는 프로젝트입니다.
 
@@ -26,8 +26,8 @@
 streamlit run streamlit_app.py
 ```
 
-Auto refresh:
-- 사이드바에서 `Auto refresh every 60s` 체크 시 60초마다 재분석합니다.
+자동 재분석:
+- 사이드바에서 `60초 자동 재분석` 체크 시 60초마다 재분석합니다.
 
 ## 실행
 ```powershell
@@ -50,8 +50,8 @@ python -m pytest -q
 ## Git Push
 ```powershell
 git add .
-git commit -m "feat: streamlit live analyzer integration"
-git push -u origin work
+git commit -m "feat: 텐아시아 한국어 UI 및 디자인 개선"
+git push -u origin main
 ```
 
 ## Streamlit Cloud 배포
@@ -63,6 +63,6 @@ git push -u origin work
 배포 후 URL에서 바로 온라인 사용 가능합니다.
 
 ## 다음 단계
-1. Tenasia 기사 DOM 패턴에 맞는 선택자 보정
+1. 텐아시아 기사 DOM 패턴에 맞는 선택자 보정
 2. 키워드 기반 세부 점수(제목-본문 일치도) 추가
 3. 추천 문구에 예상 영향도(트래픽/CTR) 추정치 추가
