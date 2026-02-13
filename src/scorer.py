@@ -6,6 +6,106 @@ def _clamp(value: float, low: float, high: float) -> float:
     return max(low, min(high, value))
 
 
+ENTERTAINMENT_KEYWORDS = (
+    "comeback",
+    "teaser",
+    "photo",
+    "interview",
+    "idol",
+    "actor",
+    "singer",
+    "drama",
+    "\ucef4\ubc31",
+    "\ud2f0\uc800",
+    "\ud3ec\ud1a0",
+    "\ud654\ubcf4",
+    "\uc544\uc774\ub3cc",
+    "\ubc30\uc6b0",
+    "\uac00\uc218",
+    "\uc778\ud130\ubdf0",
+)
+
+SHORT_FORM_KEYWORDS = (
+    "photo",
+    "video",
+    "breaking",
+    "clip",
+    "\ud3ec\ud1a0",
+    "\uc0ac\uc9c4",
+    "\uc601\uc0c1",
+    "\uc18d\ubcf4",
+    "\ud604\uc7a5",
+)
+
+
+def _detect_profile(article: Dict[str, Any]) -> Dict[str, Any]:
+    title = (article.get("title") or "").lower()
+    url = (article.get("url") or "").lower()
+    content = (article.get("content") or "").lower()
+    word_count = int(article.get("word_count") or 0)
+    paragraph_count = int(article.get("paragraph_count") or 0)
+
+    entertainment_hits = sum(1 for kw in ENTERTAINMENT_KEYWORDS if kw in title or kw in content)
+    short_form_hits = sum(1 for kw in SHORT_FORM_KEYWORDS if kw in title or kw in url)
+
+    is_entertainment = entertainment_hits >= 1
+    is_short_form = short_form_hits >= 1 or (word_count <= 180 and paragraph_count <= 4)
+    is_deep_dive = word_count >= 350 and paragraph_count >= 6
+
+    if is_entertainment and is_short_form:
+        fmt = "short_form"
+    elif is_entertainment and is_deep_dive:
+        fmt = "deep_dive"
+    else:
+        fmt = "standard"
+
+    return {
+        "domain": "entertainment_news" if is_entertainment else "general_news",
+        "format": fmt,
+    }
+
+
+def _apply_profile_rules(
+    criterion_id: str,
+    rules: Dict[str, Any],
+    profile: Dict[str, Any],
+) -> Dict[str, Any]:
+    adjusted = dict(rules)
+    domain = profile.get("domain")
+    fmt = profile.get("format")
+
+    if domain != "entertainment_news":
+        return adjusted
+
+    if criterion_id == "headings":
+        if fmt == "short_form":
+            adjusted["target_h2_count"] = 0
+        elif fmt == "standard":
+            adjusted["target_h2_count"] = min(int(adjusted.get("target_h2_count", 2)), 1)
+    elif criterion_id == "content":
+        if fmt == "short_form":
+            adjusted["min_word_count"] = 110
+            adjusted["ideal_word_count"] = 220
+        elif fmt == "standard":
+            adjusted["min_word_count"] = 170
+            adjusted["ideal_word_count"] = 320
+        elif fmt == "deep_dive":
+            adjusted["min_word_count"] = 260
+            adjusted["ideal_word_count"] = 520
+    elif criterion_id == "links":
+        adjusted["min_internal_links"] = 1
+        adjusted["require_external_links"] = False
+    elif criterion_id == "readability":
+        if fmt == "short_form":
+            adjusted["ideal_min_avg_sentence_words"] = 8
+            adjusted["ideal_max_avg_sentence_words"] = 22
+        else:
+            adjusted["ideal_min_avg_sentence_words"] = 10
+            adjusted["ideal_max_avg_sentence_words"] = 24
+
+    return adjusted
+
+
 def _score_title(article: Dict[str, Any], weight: int, rules: Dict[str, Any]) -> Dict[str, Any]:
     title = (article.get("title") or "").strip()
     length = len(title)
@@ -232,6 +332,7 @@ def score_article(article: Dict[str, Any], rubric: Dict[str, Any]) -> Dict[str, 
     details: List[Dict[str, Any]] = []
     total_score = 0.0
     total_weight = 0.0
+    profile = _detect_profile(article)
 
     if article.get("error"):
         return {
@@ -245,7 +346,7 @@ def score_article(article: Dict[str, Any], rubric: Dict[str, Any]) -> Dict[str, 
     for criterion in criteria:
         criterion_id = criterion.get("id")
         weight = int(criterion.get("weight", 0))
-        rules = criterion.get("rules", {})
+        rules = _apply_profile_rules(criterion_id, criterion.get("rules", {}), profile)
         scorer = SCORERS.get(criterion_id)
         if not scorer or weight <= 0:
             continue
@@ -275,5 +376,6 @@ def score_article(article: Dict[str, Any], rubric: Dict[str, Any]) -> Dict[str, 
         "max_score": max_score,
         "grade": grade,
         "details": details,
+        "profile": profile,
         "error": "",
     }

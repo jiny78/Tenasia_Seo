@@ -33,3 +33,30 @@ def test_score_article_and_recommend() -> None:
     assert score_result["total_score"] < 60
     assert len(score_result["details"]) == 7
     assert len(fixes) > 0
+
+
+def test_entertainment_short_form_profile_relaxes_h2_and_word_rules() -> None:
+    article = {
+        "url": "https://example.com/news/photo/123",
+        "title": "아이돌 A 포토 공개",
+        "meta_description": "아이돌 A의 현장 포토가 공개됐다. 스타일링 포인트를 확인할 수 있다.",
+        "h1": "아이돌 A 포토 공개",
+        "h2_count": 0,
+        "content": "아이돌 A가 행사장 포토월에 섰다. 팬 반응이 이어졌다.",
+        "word_count": 16,
+        "paragraph_count": 2,
+        "image_count": 1,
+        "images_missing_alt": 0,
+        "internal_links": 1,
+        "external_links": 0,
+        "error": "",
+    }
+    rubric = _load_rubric()
+
+    score_result = score_article(article, rubric)
+    details = {item["id"]: item for item in score_result["details"]}
+
+    assert score_result["profile"]["domain"] == "entertainment_news"
+    assert score_result["profile"]["format"] == "short_form"
+    assert "h2_insufficient" not in details["headings"]["issues"]
+    assert "internal_links_insufficient" not in details["links"]["issues"]

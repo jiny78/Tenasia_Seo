@@ -203,11 +203,16 @@ def render_recommendations(result: Dict[str, Any]) -> None:
 
 def render_article_overview(result: Dict[str, Any]) -> None:
     article = result["article"]
+    profile = result.get("score", {}).get("profile", {})
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("\ub2e8\uc5b4 \uc218", article.get("word_count", 0))
     col2.metric("\ubb38\ub2e8 \uc218", article.get("paragraph_count", 0))
     col3.metric("\ub0b4\ubd80 \ub9c1\ud06c", article.get("internal_links", 0))
     col4.metric("\uc678\ubd80 \ub9c1\ud06c", article.get("external_links", 0))
+    if profile:
+        st.caption(
+            f"\ud3c9\uac00 \ud504\ub85c\ud30c\uc77c: {profile.get('domain', '-')} / {profile.get('format', '-')}"
+        )
 
     with st.expander("\ucd94\ucd9c \uba54\ud0c0\ub370\uc774\ud130", expanded=False):
         st.write(f"\uc81c\ubaa9: {article.get('title', '')}")
