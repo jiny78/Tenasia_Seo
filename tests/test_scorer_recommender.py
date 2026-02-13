@@ -60,3 +60,29 @@ def test_entertainment_short_form_profile_relaxes_h2_and_word_rules() -> None:
     assert score_result["profile"]["format"] == "short_form"
     assert "h2_insufficient" not in details["headings"]["issues"]
     assert "internal_links_insufficient" not in details["links"]["issues"]
+
+
+def test_short_form_complete_facts_not_forced_long_body() -> None:
+    article = {
+        "url": "https://example.com/photo/999",
+        "title": "Actor A photo release",
+        "meta_description": "Actor A photo was released today with teaser cuts.",
+        "h1": "Actor A photo release",
+        "h2_count": 0,
+        "content": "Actor A released teaser photos today. The agency announced the schedule.",
+        "word_count": 22,
+        "paragraph_count": 2,
+        "image_count": 1,
+        "images_missing_alt": 0,
+        "internal_links": 1,
+        "external_links": 0,
+        "error": "",
+    }
+    rubric = _load_rubric()
+
+    score_result = score_article(article, rubric)
+    details = {item["id"]: item for item in score_result["details"]}
+
+    assert score_result["profile"]["domain"] == "entertainment_news"
+    assert score_result["profile"]["format"] == "short_form"
+    assert "content_too_short" not in details["content"]["issues"]

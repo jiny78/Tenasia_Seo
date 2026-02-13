@@ -80,8 +80,12 @@ def _apply_profile_rules(
     if criterion_id == "headings":
         if fmt == "short_form":
             adjusted["target_h2_count"] = 0
+            adjusted["h1_required"] = False
         elif fmt == "standard":
             adjusted["target_h2_count"] = min(int(adjusted.get("target_h2_count", 2)), 1)
+            adjusted["soft_h1_if_title_present"] = True
+        elif fmt == "deep_dive":
+            adjusted["soft_h1_if_title_present"] = True
     elif criterion_id == "content":
         if fmt == "short_form":
             adjusted["min_word_count"] = 110
@@ -104,6 +108,52 @@ def _apply_profile_rules(
             adjusted["ideal_max_avg_sentence_words"] = 24
 
     return adjusted
+
+
+def _content_signals(article: Dict[str, Any]) -> Dict[str, bool]:
+    title = (article.get("title") or "").lower()
+    content = (article.get("content") or "").lower()
+    text = f"{title} {content}"
+
+    subject_markers = (
+        "\uc544\uc774\ub3cc",
+        "\ubc30\uc6b0",
+        "\uac00\uc218",
+        "\uba64\ubc84",
+        "\uadf8\ub8f9",
+        "actor",
+        "singer",
+        "group",
+    )
+    event_markers = (
+        "\uacf5\uac1c",
+        "\ubc1c\ud45c",
+        "\ucd9c\uc5f0",
+        "\ucef4\ubc31",
+        "\uac1c\ucd5c",
+        "\uc5f4\uc560",
+        "\uacb0\ud63c",
+        "release",
+        "announce",
+        "comeback",
+        "interview",
+    )
+
+    has_subject = any(marker in text for marker in subject_markers)
+    has_event = any(marker in text for marker in event_markers)
+
+    has_time_context = bool(
+        re.search(
+            r"(오늘|어제|내일|지난|오는|오전|오후|방송|공개일|현지시간|[0-9]{1,2}월\s*[0-9]{1,2}일|[0-9]{4}-[0-9]{2}-[0-9]{2})",
+            text,
+        )
+    )
+
+    return {
+        "has_subject": has_subject,
+        "has_event": has_event,
+        "has_time_context": has_time_context,
+    }
 
 
 def _score_title(article: Dict[str, Any], weight: int, rules: Dict[str, Any]) -> Dict[str, Any]:
@@ -182,8 +232,12 @@ def _score_headings(article: Dict[str, Any], weight: int, rules: Dict[str, Any])
     score = float(weight)
 
     if rules.get("h1_required", True) and not h1:
-        score -= weight * 0.7
-        issues.append("h1_missing")
+        if rules.get("soft_h1_if_title_present", False) and (article.get("title") or "").strip():
+            score -= weight * 0.25
+            issues.append("h1_missing_soft")
+        else:
+            score -= weight * 0.7
+            issues.append("h1_missing")
 
     target_h2 = int(rules.get("target_h2_count", 2))
     if h2_count < target_h2:
@@ -203,23 +257,52 @@ def _score_content(article: Dict[str, Any], weight: int, rules: Dict[str, Any]) 
     word_count = int(article.get("word_count") or 0)
     issues: List[str] = []
     score = float(weight)
+    profile = article.get("_profile", {})
+    is_entertainment = profile.get("domain") == "entertainment_news"
+    content_signals = _content_signals(article)
 
     min_words = int(rules.get("min_word_count", 300))
     ideal_words = int(rules.get("ideal_word_count", 700))
 
-    if word_count < min_words:
-        score -= weight * 0.7
-        issues.append("content_too_short")
-    elif word_count < ideal_words:
-        score -= weight * 0.2
-        issues.append("content_below_ideal_length")
+    if is_entertainment:
+        penalty_ratio = 0.0
+        if not content_signals["has_subject"]:
+            penalty_ratio += 0.28
+            issues.append("content_missing_subject")
+        if not content_signals["has_event"]:
+            penalty_ratio += 0.35
+            issues.append("content_missing_event")
+        if not content_signals["has_time_context"]:
+            penalty_ratio += 0.22
+            issues.append("content_missing_time_context")
+
+        core_complete = (
+            content_signals["has_subject"]
+            and content_signals["has_event"]
+            and content_signals["has_time_context"]
+        )
+        if word_count < min_words and (word_count < 60 or not core_complete):
+            penalty_ratio += 0.12
+            issues.append("content_too_short")
+        elif word_count < ideal_words:
+            penalty_ratio += 0.06
+            issues.append("content_below_ideal_length")
+
+        score -= weight * min(penalty_ratio, 0.9)
+    else:
+        if word_count < min_words:
+            score -= weight * 0.7
+            issues.append("content_too_short")
+        elif word_count < ideal_words:
+            score -= weight * 0.2
+            issues.append("content_below_ideal_length")
 
     return {
         "id": "content",
         "weight": weight,
         "score": round(_clamp(score, 0, weight), 2),
         "issues": issues,
-        "metrics": {"word_count": word_count},
+        "metrics": {"word_count": word_count, **content_signals},
     }
 
 
@@ -333,6 +416,8 @@ def score_article(article: Dict[str, Any], rubric: Dict[str, Any]) -> Dict[str, 
     total_score = 0.0
     total_weight = 0.0
     profile = _detect_profile(article)
+    article = dict(article)
+    article["_profile"] = profile
 
     if article.get("error"):
         return {
